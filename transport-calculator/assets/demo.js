@@ -57433,6 +57433,7 @@
                             "Stress Test - Key Transpose": "data/Stress_Test_Key_Transpose.musicxml",
                             "Stress Test - Diminished Seventh Chords": "data/Stress_Test_With_Diminished_Seventh_Chords.musicxml",
                             "Beethoven, L.v. - An die ferne Geliebte": "data/Beethoven_AnDieFerneGeliebte.xml",
+                            "(BUG) Det er en skatt bak dekker gjemt.musicxml":"data/BUG-ID-98013_Det_er_en_skatt_bak_dekker_gjemt.musicxml",
                             "Clementi, M. - Sonatina Op.36 No.1 Pt.1": "data/MuzioClementi_SonatinaOpus36No1_Part1.xml",
                             "Clementi, M. - Sonatina Op.36 No.1 Pt.2": "data/MuzioClementi_SonatinaOpus36No1_Part2.xml",
                             "Clementi, M. - Sonatina Op.36 No.3 Pt.1": "data/MuzioClementi_SonatinaOpus36No3_Part1.xml",
