@@ -1,0 +1,71 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ETC Transpose Calculator Demo</title><meta name="description" content="A showcase for OpenSheetMusicDisplay."><meta name="author" content="OpenSheetMusicDisplay contributors"><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><link rel="icon" href="./favicon.ico?" type="image/x-icon"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous"><style>*{
+                font-family: sans-serif;
+            }
+            div#sheet-container{
+                overflow-y: scroll;
+                background-color: #fefefe;
+                position:fixed;
+                left:600px;
+                top:0px;
+                bottom:0px;
+                right:0px;
+            }
+            div#menu{
+                background-color: #CCC;
+                position:fixed;
+                left:0px;
+                top:0px;
+                bottom:0px;
+                width:600px;
+            }
+            div#menu>div#menu-header{
+                height:32px;
+            }
+            div#menu>div#menu-header>img{
+                position:absolute;
+                height:32px;
+                left:8px;
+                top:8px;
+                width:32px;
+            }
+            div#menu>div#menu-header>div#brand{
+                font-weight: 900;
+                font-size: 1.5em;
+                position:absolute;
+                height:32px;
+                left:72px;
+                top:8px;
+                right:8px;
+                bottom:0px;
+                line-height: 32px;
+                text-align:center;
+            }
+            div#menu>div.menu-item{
+                padding:8px;
+                padding-bottom:0px;
+            }
+            input,button,select{
+                display:block;
+                min-width:100%;
+                max-width:100%;
+                min-height:100%;
+                max-height:100%;
+                box-sizing: border-box;
+            }
+            select {
+                margin:0px;
+                padding:0px;
+            }
+            button{
+                display:inline-block;
+                cursor:pointer;
+                min-height:100%;
+                max-height:100%;
+            }
+            table{
+                width:100%;
+            }
+            input.larger {
+                cursor: pointer;
+                height: 2em;
+            }</style><link rel="icon" href="favicon.ico"><script defer="defer" src="opensheetmusicdisplay.min.js"></script><script defer="defer" src="demo.min.js"></script></head><body><div id="menu"><div id="menu-header" style="line-height:32px;"><img src="./favicon.ico?" style="width:32px;height:32px"><div id="brand">ETC Transpose Calculator Demo</div></div><table cellpadding="4" cellspacing="4"><tr><td width="*">.</td><td width="10%">.</td><td width="50%">.</td></tr><tr><td colspan="3"><hr></td></tr><tr><td colspan="3">Select Sample</td></tr><tr><td colspan="3"><select class="" id="select-sample"></select></td></tr><tr><td colspan="3"><hr></td></tr><tr><th colspan="3">Transpose Chromatically</th></tr><tr><td colspan="3">&nbsp;</td></tr><tr><td>Transpose by Key</td><td>Octave</td><td></td></tr><tr><td><select class="" id="transpose-by-key"><option value="-7">Cb major / Ab minor</option><option value="-6">Gb major / Eb minor</option><option value="-5">Db major / Bb minor</option><option value="-4">Ab major / F minor</option><option value="-3">Eb major / C minor</option><option value="-2">Bb major / G minor</option><option value="-1">F major / D minor</option><option value="0">C major / A minor</option><option value="1">G major / E minor</option><option value="2">D major / B minor</option><option value="3">A major / F# minor</option><option value="4">E major / C# minor</option><option value="5">B major / G# minor</option><option value="6">F# major / D# minor</option><option value="7">C# major / A# minor</option></select></td><td><input type="number" id="transpose-by-key-octave" value="0" style="max-width:10ch;"/></td><td><button class="" id="transpose-by-key-btn">Transpose Key</button></td></tr><tr><td>Transpose by halftones:</td><td></td><td></td></tr><tr><td><input type="number" id="transpose-by-halftones" value="0"/></td><td></td><td><button class="" id="transpose-by-halftones-btn">Transpose halftones</button></td></tr><tr><td>Transpose by Interval:</td><td></td><td></td></tr><tr><td><select class="" id="transpose-by-interval"><option value="perfectOctaveUp">Perfect Octave Up</option><option value="diminishedOctaveUp">Diminished Octave Up</option><option value="augmentedSeventhUp">Augmented Seventh Up</option><option value="majorSeventhUp">Major Seventh Up</option><option value="minorSeventhUp">Minor Seventh Up</option><option value="diminishedSeventhUp">Diminished Seventh Up</option><option value="augmentedSixthUp">Augmented Sixth Up</option><option value="majorSixthUp">Major Sixth Up</option><option value="minorSixthUp">Minor Sixth Up</option><option value="diminishedSixthUp">Diminished Sixth Up</option><option value="augmentedFifthUp">Augmented Fifth Up</option><option value="perfectFifthUp">Perfect Fifth Up</option><option value="diminishedFifthUp">Diminished Fifth Up</option><option value="augmentedFourthUp">Augmented Fourth Up</option><option value="perfectFourthUp">Perfect Fourth Up</option><option value="diminishedFourthUp">Diminished Fourth Up</option><option value="augmentedThirdUp">Augmented Third Up</option><option value="majorThirdUp">Major Third Up</option><option value="minorThirdUp">Minor Third Up</option><option value="diminishedThirdUp">Diminished Third Up</option><option value="augmentedSecondUp">Augmented Second Up</option><option value="majorSecondUp">Major Second Up</option><option value="minorSecondUp">Minor Second Up</option><option value="diminishedSecondUp">Diminished Second Up</option><option value="augmentedUnisonUp">Augmented Unison Up</option><option value="perfectUnison" style="background-color:yellow" selected="selected">Perfect Unison</option><option value="augmentedUnisonDown">Augmented Unison Down</option><option value="diminishedSecondDown">Diminished Second Down</option><option value="minorSecondDown">Minor Second Down</option><option value="majorSecondDown">Major Second Down</option><option value="augmentedSecondDown">Augmented Second Down</option><option value="diminishedThirdDown">Diminished Third Down</option><option value="minorThirdDown">Minor Third Down</option><option value="majorThirdDown">Major Third Down</option><option value="augmentedThirdDown">Augmented Third Down</option><option value="diminishedFourthDown">Diminished Fourth Down</option><option value="perfectFourthDown">Perfect Fourth Down</option><option value="augmentedFourthDown">Augmented Fourth Down</option><option value="diminishedFifthDown">Diminished Fifth Down</option><option value="perfectFifthDown">Perfect Fifth Down</option><option value="augmentedFifthDown">Augmented Fifth Down</option><option value="diminishedSixthDown">Diminished Sixth Down</option><option value="minorSixthDown">Minor Sixth Down</option><option value="majorSixthDown">Major Sixth Down</option><option value="augmentedSixthDown">Augmented Sixth Down</option><option value="diminishedSeventhDown">Diminished Seventh Down</option><option value="minorSeventhDown">Minor Seventh Down</option><option value="majorSeventhDown">Major Seventh Down</option><option value="augmentedSeventhDown">Augmented Seventh Down</option><option value="diminishedOctaveDown">Diminished Octave Down</option><option value="perfectOctaveDown">Perfect Octave Down</option></select></td><td></td><td><button class="" id="transpose-by-interval-btn">Transpose Interval</button></td></tr><tr><td colspan="3">&nbsp;</td></tr><tr><td colspan="2">Transpose Key Signatures:</td><td colspan="1"><input class="larger" type="checkbox" id="transpose-key-signatures" value="1" checked="checked"/></td></tr><tr><td colspan="3"><hr></td></tr><tr><th colspan="3">Transpose Diatonically</th></tr><tr><td colspan="3">&nbsp;</td></tr><tr><td>Transpose to Step:</td><td></td><td></td></tr><tr><td colspan="2"><select class="" id="transpose-diatonically"><option value="+14">++ Fifteenth</option><option value="+13">++ Fourteenth</option><option value="+12">++ Thirteenth</option><option value="+11">++ Twelfth</option><option value="+10">++ Eleventh</option><option value="+9">++ Tenth</option><option value="+8">++ Ninth</option><option value="+7">++ Eighth</option><option value="+6">++ Seventh</option><option value="+5">++ Sixth</option><option value="+4">++ Fifth</option><option value="+3">++ Fourth</option><option value="+2">++ Third</option><option value="+1">++ Second</option><option value="0" style="background-color:yellow" selected="selected">== First</option><option value="-1">-- Second</option><option value="-2">-- Third</option><option value="-3">-- Fourth</option><option value="-4">-- Fifth</option><option value="-5">-- Sixth</option><option value="-6">-- Seventh</option><option value="-7">-- Eighth</option><option value="-8">-- Ninth</option><option value="-9">-- Tenth</option><option value="-10">-- Eleventh</option><option value="-11">-- Twelfth</option><option value="-12">-- Thirteenth</option><option value="-13">-- Fourteenth</option><option value="-14">-- Fifteenth</option></select></td><td><button class="" id="transpose-diatonically-btn">Transpose Diatonically</button></td></tr></table></div><div id="sheet-container"><div><table cellspacing="0" style="max-width:700px;"><tr id="error-tr"><td></td><td id="error-td"></td></tr></table></div></div></body></html>
