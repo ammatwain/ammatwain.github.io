@@ -385,5 +385,36 @@ var notes = [
 var svg =  makeSvg("svgContainer1", 400, 400);
 drawPieDonutSvg(svg, "start", +15,180, "notes", notes);
 drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
+
+    var degrees = null;
+    var rotateDegrees = 0;
+    var rotateNotes = 0;
+    var notes = null;
+    var incdec = 360/77;
+    window.onload = (ewol)=>{
+      degrees = document.querySelector("g#degrees");
+      notes = document.querySelector("g#notes");
+      notes.style.backgroundColor="yellow";
+      degrees.addEventListener("wheel", (ed)=>{
+        if (ed.deltaY<0) {
+          rotateDegrees -= incdec;
+        } else if (ed.deltaY>0) {
+          rotateDegrees += incdec;
+        }
+        degrees.setAttribute("transform",`rotate(${rotateDegrees} 200 200)`)
+      });
+      notes.addEventListener("wheel", (en)=>{
+        if (en.deltaY<0) {
+          rotateNotes -= incdec;
+        } else if (en.deltaY>0) {
+          rotateNotes += incdec;
+        }
+        notes.setAttribute("transform",`rotate(${rotateNotes} 200 200)`)
+      });
+    };
+
+
+
+
   </script>
 </html>
