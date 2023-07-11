@@ -145,23 +145,34 @@ function drawPieDonutTextRotation(canvasId, data) {
   });
 }
 
-
-function drawPieDonutSvg(containerId, textAlign, textXPos, data) {
+function makeSvg(containerId, width, height){
   var svgContainer = document.getElementById(containerId);
   var svgNS = "http://www.w3.org/2000/svg";
   var svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("width", "400");
   svg.setAttribute("height", "400");
   svgContainer.appendChild(svg);
+  return svg;
+}
 
+function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
+  var svgNS = "http://www.w3.org/2000/svg";
   var centerX = 200;
   var centerY = 200;
-  var radius = 150;
+ // var radius = 150;
   var totalValue = data.reduce(function (acc, d) {
     return acc + d.value;
   }, 0);
   var startAngle = -90; // Start angle at 12 o'clock position
   var endAngle, labelText, rotationAngle;
+  var g = document.createElementNS(svgNS, "g");
+  g.id = group;
+  var circle = document.createElementNS(svgNS, "circle");
+  circle.setAttribute("cx",centerX);
+  circle.setAttribute("cy",centerY);
+  circle.setAttribute("r",radius);
+  circle.setAttribute("fill","rgba(0,0,0,.1)");
+  g.appendChild(circle);
 
   data.forEach(function (d) {
     endAngle = startAngle + (360 * d.value / totalValue);
@@ -191,7 +202,7 @@ function drawPieDonutSvg(containerId, textAlign, textXPos, data) {
     var path = document.createElementNS(svgNS, "path");
     path.setAttribute("d", pathData);
     path.setAttribute("fill", d.bg);
-    svg.appendChild(path);
+    g.appendChild(path);
 
     var text = document.createElementNS(svgNS, "text");
     text.setAttribute("x", textX+textXPos);
@@ -204,10 +215,11 @@ function drawPieDonutSvg(containerId, textAlign, textXPos, data) {
     text.setAttribute("fill", d.fg);
     text.textContent = labelText;
     text.setAttribute("font-size", 8 );
-    svg.appendChild(text);
+    g.appendChild(text);
 
     startAngle = endAngle;
   });
+  svg.appendChild(g);
 }
 
 var degrees = [
@@ -370,8 +382,8 @@ var notes = [
 { label:"D♭♭",    value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
 ];
 
-
-drawPieDonutSvg('svgContainer1', "start", +15,notes);
-drawPieDonutSvg('svgContainer2', "end",34,  degrees);
+var svg =  makeSvg("svgContainer1", 400, 400);
+drawPieDonutSvg(svg, "start", +15,180, "notes", notes);
+drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
   </script>
 </html>
