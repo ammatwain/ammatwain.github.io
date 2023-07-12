@@ -11,6 +11,30 @@
       svg{
         cursor: default;
       }
+      path.degree{
+        fill:#ffffff;
+      }
+      text.degree{
+        fill: #0000CC;
+      }
+      path.degree.active{
+        fill: #000000;
+      }
+      text.degree.active{
+        fill:#ffffff;
+      }
+      path.note{
+        fill:#ffffff;
+      }
+      text.note{
+        fill: #0000CC;
+      }
+      path.note.active{
+        fill: #000000;
+      }
+      text.note.active{
+        fill:#ffffff;
+      }
     </style>
   </head>
   <body>
@@ -21,379 +45,255 @@
     <footer></footer>
   </body>
   <script>
-  function drawPieDonutOld(canvasId, data) {
-  var canvas = document.getElementById(canvasId);
-  var ctx = canvas.getContext('2d');
-  var centerX = canvas.width / 2;
-  var centerY = canvas.height / 2;
-  var radius = Math.min(centerX/2, centerY/2);
-  var totalValue = data.reduce(function (acc, d) {
-    return acc + d.value;
-  }, 0);
-  var startAngle = -Math.PI / 2; // Start angle at 12 o'clock position
-  var endAngle, labelX, labelY, labelText;
+    var degrees = [
+      { label:      "1 ← comma 00 →" , value:1, class:"degree active",path: null, text: null},
+      { label:     "♯7 ← comma 01 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯6 ← comma 02 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯5 ← comma 03 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭4 ← comma 04 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭3 ← comma 05 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭2 ← comma 06 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♯1 ← comma 07 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♯♯7 ← comma 08 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯6 ← comma 09 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭5 ← comma 10 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭4 ← comma 11 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭3 ← comma 12 → ", value:1, class:"degree",       path: null, text: null},
+      { label:      "2 ← comma 13 → ", value:1, class:"degree active",path: null, text: null},
+      { label:    "♯♯1 ← comma 14 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯7 ← comma 15 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯6 ← comma 16 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭5 ← comma 17 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭4 ← comma 18 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭3 ← comma 19 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♯2 ← comma 20 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯1 ← comma 21 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯7 ← comma 22 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭6 ← comma 23 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭5 ← comma 24 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭4 ← comma 25 → ", value:1, class:"degree",       path: null, text: null},
+      { label:      "3 ← comma 26 → ", value:1, class:"degree active",path: null, text: null},
+      { label:    "♯♯2 ← comma 27 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯1 ← comma 28 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯7 ← comma 29 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭6 ← comma 30 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭5 ← comma 31 → ", value:1, class:"degree",       path: null, text: null},
+      { label:      "4 ← comma 32 → ", value:1, class:"degree active",path: null, text: null},
+      { label:     "♯3 ← comma 33 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯2 ← comma 34 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯1 ← comma 35 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭7 ← comma 36 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭6 ← comma 37 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭5 ← comma 38 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♯4 ← comma 39 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♯♯3 ← comma 40 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯2 ← comma 41 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭1 ← comma 42 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭7 ← comma 43 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭6 ← comma 44 → ", value:1, class:"degree",       path: null, text: null},
+      { label:      "5 ← comma 45 → ", value:1, class:"degree active",path: null, text: null},
+      { label:    "♯♯4 ← comma 46 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯3 ← comma 47 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯2 ← comma 48 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭1 ← comma 49 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭7 ← comma 50 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭6 ← comma 51 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♯5 ← comma 52 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯4 ← comma 53 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯3 ← comma 54 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭2 ← comma 55 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭1 ← comma 56 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭7 ← comma 57 → ", value:1, class:"degree",       path: null, text: null},
+      { label:      "6 ← comma 58 → ", value:1, class:"degree active",path: null, text: null},
+      { label:    "♯♯5 ← comma 59 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯4 ← comma 60 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯3 ← comma 61 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭2 ← comma 62 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭1 ← comma 63 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭7 ← comma 64 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♯6 ← comma 65 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♯♯♯5 ← comma 66 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♯♯♯♯♯4 ← comma 67 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭3 ← comma 68 → ", value:1, class:"degree",       path: null, text: null},
+      { label:   "♭♭♭2 ← comma 69 → ", value:1, class:"degree",       path: null, text: null},
+      { label:     "♭1 ← comma 70 → ", value:1, class:"degree",       path: null, text: null},
+      { label:      "7 ← comma 71 → ", value:1, class:"degree active",path: null, text: null},
+      { label:    "♯♯6 ← comma 72 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♯♯♯♯5 ← comma 73 → ", value:1, class:"degree",       path: null, text: null},
+      { label: "♭♭♭♭♭4 ← comma 74 → ", value:1, class:"degree",       path: null, text: null},
+      { label:  "♭♭♭♭3 ← comma 75 → ", value:1, class:"degree",       path: null, text: null},
+      { label:    "♭♭2 ← comma 76 → ", value:1, class:"degree",       path: null, text: null},
+    ];
 
-  data.forEach(function (d) {
-    endAngle = startAngle + (2 * Math.PI * d.value / totalValue);
-    labelX = centerX + (radius / 2) * Math.cos(startAngle + (endAngle - startAngle) / 2);
-    labelY = centerY + (radius / 2) * Math.sin(startAngle + (endAngle - startAngle) / 2);
-    labelText = d.label + ' ' + Math.round((d.value / totalValue) * 100) + '%';
+    var notes = [
+      { label:"C",      value:1, class:"note", path: null, text: null},
+      { label:"B♯",     value:1, class:"note", path: null, text: null},
+      { label:"A♯♯♯",   value:1, class:"note", path: null, text: null},
+      { label:"G♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"F♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"E♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"D♭",     value:1, class:"note", path: null, text: null},
+      { label:"C♯",     value:1, class:"note", path: null, text: null},
+      { label:"B♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"A♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"G♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"F♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"E♭♭",    value:1, class:"note", path: null, text: null},
+      { label:"D",      value:1, class:"note", path: null, text: null},
+      { label:"C♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"B♯♯♯",   value:1, class:"note", path: null, text: null},
+      { label:"A♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"G♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"F♭♭",    value:1, class:"note", path: null, text: null},
+      { label:"E♭",     value:1, class:"note", path: null, text: null},
+      { label:"D♯",     value:1, class:"note", path: null, text: null},
+      { label:"C♯♯♯",   value:1, class:"note", path: null, text: null},
+      { label:"B♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"A♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"G♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"F♭",     value:1, class:"note", path: null, text: null},
+      { label:"E",      value:1, class:"note", path: null, text: null},
+      { label:"D♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"C♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"B♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"A♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"G♭♭",    value:1, class:"note", path: null, text: null},
+      { label:"F",      value:1, class:"note", path: null, text: null},
+      { label:"E#",     value:1, class:"note", path: null, text: null},
+      { label:"D###",   value:1, class:"note", path: null, text: null},
+      { label:"C♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"B♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"A♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"G♭",     value:1, class:"note", path: null, text: null},
+      { label:"F♯",     value:1, class:"note", path: null, text: null},
+      { label:"E♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"D♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"C♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"B♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"A♭♭",    value:1, class:"note", path: null, text: null},
+      { label:"G",      value:1, class:"note", path: null, text: null},
+      { label:"F♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"E♯♯♯",   value:1, class:"note", path: null, text: null},
+      { label:"D♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"C♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"B♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"A♭",     value:1, class:"note", path: null, text: null},
+      { label:"G♯",     value:1, class:"note", path: null, text: null},
+      { label:"F♯♯♯",   value:1, class:"note", path: null, text: null},
+      { label:"E♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"D♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"C♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"B♭♭",    value:1, class:"note", path: null, text: null},
+      { label:"A",      value:1, class:"note", path: null, text: null},
+      { label:"G♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"F♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"E♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"D♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"C♭♭",    value:1, class:"note", path: null, text: null},
+      { label:"B♭",     value:1, class:"note", path: null, text: null},
+      { label:"A♯",     value:1, class:"note", path: null, text: null},
+      { label:"G♯♯♯",   value:1, class:"note", path: null, text: null},
+      { label:"F♯♯♯♯♯", value:1, class:"note", path: null, text: null},
+      { label:"E♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"D♭♭♭",   value:1, class:"note", path: null, text: null},
+      { label:"C♭",     value:1, class:"note", path: null, text: null},
+      { label:"B",      value:1, class:"note", path: null, text: null},
+      { label:"A♯♯",    value:1, class:"note", path: null, text: null},
+      { label:"G♯♯♯♯",  value:1, class:"note", path: null, text: null},
+      { label:"F♭♭♭♭♭", value:1, class:"note", path: null, text: null},
+      { label:"E♭♭♭♭",  value:1, class:"note", path: null, text: null},
+      { label:"D♭♭",    value:1, class:"note", path: null, text: null},
+    ];
 
-    // Draw pie segment
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.lineWidth = radius * 0.5; // Thickness of the pie donut
-    ctx.strokeStyle = d.color;
-    ctx.stroke();
+    function makeSvg(containerId, width, height){
+      var svgContainer = document.getElementById(containerId);
+      var svgNS = "http://www.w3.org/2000/svg";
+      var svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("width", width);
+      svg.setAttribute("height", height);
+      svg.setAttribute("viewBox", "0 0 400 400");
+      var g = document.createElementNS(svgNS, "g");
+      svg.appendChild(g);
+      svgContainer.appendChild(svg);
+      return g;
+    }
 
-    // Draw text
-    ctx.fillStyle = d.color;
-    ctx.font = '14px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(labelText, labelX, labelY);
+    function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
+      var svgNS = "http://www.w3.org/2000/svg";
+      var centerX = 200;
+      var centerY = 200;
+    // var radius = 150;
+      var totalValue = data.reduce(function (acc, d) {
+        return acc + d.value;
+      }, 0);
+      var startAngle = -90; // Start angle at 12 o'clock position
+      var endAngle, labelText, rotationAngle;
+      var g = document.createElementNS(svgNS, "g");
+      g.id = group;
+      var circle = document.createElementNS(svgNS, "circle");
+      circle.setAttribute("cx",centerX);
+      circle.setAttribute("cy",centerY);
+      circle.setAttribute("r",radius);
+      circle.setAttribute("fill","rgba(0,0,0,.1)");
+      g.appendChild(circle);
+      var id = 0;
+      data.forEach(function (d) {
+        endAngle = startAngle + (360 * d.value / totalValue);
+        var sectionAngle = startAngle + (endAngle - startAngle) / 2;
 
-    startAngle = endAngle;
-  });
-}
+        var sectionX1 = centerX + radius * Math.cos(startAngle * Math.PI / 180);
+        var sectionY1 = centerY + radius * Math.sin(startAngle * Math.PI / 180);
+        var sectionX2 = centerX + radius * Math.cos(endAngle * Math.PI / 180);
+        var sectionY2 = centerY + radius * Math.sin(endAngle * Math.PI / 180);
 
+        var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
-function drawPieDonut(canvasId, data) {
-  var canvas = document.getElementById(canvasId);
-  var ctx = canvas.getContext('2d');
-  var centerX = canvas.width / 2;
-  var centerY = canvas.height / 2;
-  var radius = Math.min(centerX/2, centerY/2);
-  var totalValue = data.reduce(function (acc, d) {
-    return acc + d.value;
-  }, 0);
-  var startAngle = -Math.PI / 2; // Start angle at 12 o'clock position
-  var endAngle, labelX, labelY, labelText;
+        labelText = d.label;// + ' ' + Math.round((d.value / totalValue) * 100) + '%';
+        //rotationAngle = sectionAngle + 90; // Inclina il testo nella direzione del pie
+        rotationAngle = sectionAngle; // Inclina il testo nella direzione del pie
 
-  data.forEach(function (d) {
-    endAngle = startAngle + (2 * Math.PI * d.value / totalValue);
-    var sectionAngle = startAngle + (endAngle - startAngle) / 2;
-    var sectionRadius = radius * 0.8; // Radius for the text
+        var textX = centerX + (radius * 0.75) * Math.cos(sectionAngle * Math.PI / 180);
+        var textY = centerY + (radius * 0.75) * Math.sin(sectionAngle * Math.PI / 180);
 
-    labelX = centerX + (sectionRadius+15) * Math.cos(sectionAngle);
-    labelY = centerY + (sectionRadius+15) * Math.sin(sectionAngle);
-    labelText = d.label;
+        var pathData = [
+          "M", centerX, centerY,
+          "L", sectionX1, sectionY1,
+          "A", radius, radius, 0, largeArcFlag, 1, sectionX2, sectionY2,
+          "Z"
+        ].join(" ");
 
-    // Draw pie segment
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.lineWidth = radius * 0.5; // Thickness of the pie donut
-    ctx.strokeStyle = d.color;
-    ctx.stroke();
+        var path = document.createElementNS(svgNS, "path");
+        path.id = `${group}-${id}`;
+        path.setAttribute("d", pathData);
+        path.setAttribute("class", d.class);
 
-    // Draw text
-    //ctx.fillStyle = d.color;
-    ctx.fillStyle = "black";
-    ctx.font = '14px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(labelText, labelX, labelY);
+        //path.setAttribute("fill", d.bg);
+        g.appendChild(path);
+        d.path = path;
 
-    startAngle = endAngle;
-  });
-}
+        var text = document.createElementNS(svgNS, "text");
+        text.setAttribute("x", textX+textXPos);
+        text.setAttribute("y", textY+0.5);
+        text.setAttribute("font-family","GentiumPlus");
+        text.setAttribute("transform", "rotate(" + rotationAngle + " " + textX + " " + textY + ")");
+        text.setAttribute("text-anchor", textAlign);
+        text.setAttribute("alignment-baseline", "middle");
+        text.setAttribute("dominant-baseline","middle");
+        //text.setAttribute("fill", d.bg);
+        //text.setAttribute("fill", d.fg);
+        text.setAttribute("class", d.class);
+        text.textContent = labelText;
+        text.setAttribute("font-size", 8 );
+        g.appendChild(text);
+        d.text = text;
 
+        startAngle = endAngle;
+        id++;
+      });
+      svg.appendChild(g);
+    }
 
-function drawPieDonutTextRotation(canvasId, data) {
-  var canvas = document.getElementById(canvasId);
-  var ctx = canvas.getContext('2d');
-  var centerX = canvas.width / 2;
-  var centerY = canvas.height / 2;
-  var radius = Math.min(centerX/2, centerY/2);
-  var totalValue = data.reduce(function (acc, d) {
-    return acc + d.value;
-  }, 0);
-  var startAngle = -Math.PI / 2; // Start angle at 12 o'clock position
-  var endAngle, labelX, labelY, labelText;
-
-  data.forEach(function (d) {
-    endAngle = startAngle + (2 * Math.PI * d.value / totalValue);
-    var sectionAngle = startAngle + (endAngle - startAngle) / 2;
-    var sectionRadius = radius * 0.8; // Radius for the text
-
-    labelX = centerX + (sectionRadius +15) * Math.cos(sectionAngle);
-    labelY = centerY + (sectionRadius +15) * Math.sin(sectionAngle);
-    labelText = d.label + ' ' + Math.round((d.value / totalValue) * 100) + '%';
-
-    // Calculate the rotation angle in degrees
-    var rotationAngle = sectionAngle /* + Math.PI / 2  + Math.PI / 2*/;
-
-    // Draw pie segment
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.lineWidth = radius * 0.5; // Thickness of the pie donut
-    ctx.strokeStyle = d.color;
-    ctx.stroke();
-
-    // Save the current context state
-    ctx.save();
-
-    // Rotate the context around the label position
-    ctx.translate(labelX, labelY);
-    ctx.rotate(rotationAngle);
-
-    // Draw text
-    ctx.fillStyle = d.color;
-    ctx.font = '14px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(labelText, 0, 0);
-
-    // Restore the context state
-    ctx.restore();
-
-    startAngle = endAngle;
-  });
-}
-
-function makeSvg(containerId, width, height){
-  var svgContainer = document.getElementById(containerId);
-  var svgNS = "http://www.w3.org/2000/svg";
-  var svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", "0 0 400 400");
-  var g = document.createElementNS(svgNS, "g");
-  svg.appendChild(g);
-  svgContainer.appendChild(svg);
-  return g;
-}
-
-function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
-  var svgNS = "http://www.w3.org/2000/svg";
-  var centerX = 200;
-  var centerY = 200;
- // var radius = 150;
-  var totalValue = data.reduce(function (acc, d) {
-    return acc + d.value;
-  }, 0);
-  var startAngle = -90; // Start angle at 12 o'clock position
-  var endAngle, labelText, rotationAngle;
-  var g = document.createElementNS(svgNS, "g");
-  g.id = group;
-  var circle = document.createElementNS(svgNS, "circle");
-  circle.setAttribute("cx",centerX);
-  circle.setAttribute("cy",centerY);
-  circle.setAttribute("r",radius);
-  circle.setAttribute("fill","rgba(0,0,0,.1)");
-  g.appendChild(circle);
-  var id = 0;
-  data.forEach(function (d) {
-    endAngle = startAngle + (360 * d.value / totalValue);
-    var sectionAngle = startAngle + (endAngle - startAngle) / 2;
-
-    var sectionX1 = centerX + radius * Math.cos(startAngle * Math.PI / 180);
-    var sectionY1 = centerY + radius * Math.sin(startAngle * Math.PI / 180);
-    var sectionX2 = centerX + radius * Math.cos(endAngle * Math.PI / 180);
-    var sectionY2 = centerY + radius * Math.sin(endAngle * Math.PI / 180);
-
-    var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-    labelText = d.label;// + ' ' + Math.round((d.value / totalValue) * 100) + '%';
-    //rotationAngle = sectionAngle + 90; // Inclina il testo nella direzione del pie
-    rotationAngle = sectionAngle; // Inclina il testo nella direzione del pie
-
-    var textX = centerX + (radius * 0.75) * Math.cos(sectionAngle * Math.PI / 180);
-    var textY = centerY + (radius * 0.75) * Math.sin(sectionAngle * Math.PI / 180);
-
-    var pathData = [
-      "M", centerX, centerY,
-      "L", sectionX1, sectionY1,
-      "A", radius, radius, 0, largeArcFlag, 1, sectionX2, sectionY2,
-      "Z"
-    ].join(" ");
-
-    var path = document.createElementNS(svgNS, "path");
-    path.id = `${group}-${id}`;
-    path.setAttribute("d", pathData);
-    path.setAttribute("fill", d.bg);
-    g.appendChild(path);
-
-    var text = document.createElementNS(svgNS, "text");
-    text.setAttribute("x", textX+textXPos);
-    text.setAttribute("y", textY+0.5);
-    text.setAttribute("font-family","GentiumPlus");
-    text.setAttribute("transform", "rotate(" + rotationAngle + " " + textX + " " + textY + ")");
-    text.setAttribute("text-anchor", textAlign);
-    text.setAttribute("alignment-baseline", "middle");
-    text.setAttribute("dominant-baseline","middle");
-    //text.setAttribute("fill", d.bg);
-    text.setAttribute("fill", d.fg);
-    text.textContent = labelText;
-    text.setAttribute("font-size", 8 );
-    g.appendChild(text);
-
-    startAngle = endAngle;
-    id++;
-  });
-  svg.appendChild(g);
-}
-
-var degrees = [
-{ label:      "1 ← comma 00 →", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:     "♯7 ← comma 01 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯6 ← comma 02 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯5 ← comma 03 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♭♭♭♭4 ← comma 04 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭3 ← comma 05 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭2 ← comma 06 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♯1 ← comma 07 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♯♯7 ← comma 08 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♯♯♯♯6 ← comma 09 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♭♭♭♭♭5 ← comma 10 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭4 ← comma 11 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♭♭3 ← comma 12 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:      "2 ← comma 13 → ", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:    "♯♯1 ← comma 14 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯7 ← comma 15 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯6 ← comma 16 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♭♭♭♭5 ← comma 17 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♭♭4 ← comma 18 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭3 ← comma 19 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♯2 ← comma 20 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯1 ← comma 21 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♯♯♯♯7 ← comma 22 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♭♭♭♭♭6 ← comma 23 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭5 ← comma 24 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭4 ← comma 25 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:      "3 ← comma 26 → ", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:    "♯♯2 ← comma 27 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♯♯♯♯1 ← comma 28 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯7 ← comma 29 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♭♭♭♭6 ← comma 30 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♭♭5 ← comma 31 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:      "4 ← comma 32 → ", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:     "♯3 ← comma 33 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯2 ← comma 34 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯1 ← comma 35 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♭♭♭♭♭7 ← comma 36 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭6 ← comma 37 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭5 ← comma 38 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♯4 ← comma 39 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♯♯3 ← comma 40 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♯♯♯♯2 ← comma 41 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♭♭♭♭♭1 ← comma 42 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♭♭♭♭7 ← comma 43 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♭♭6 ← comma 44 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:      "5 ← comma 45 → ", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:    "♯♯4 ← comma 46 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯3 ← comma 47 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯2 ← comma 48 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♭♭♭♭1 ← comma 49 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭7 ← comma 50 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭6 ← comma 51 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♯5 ← comma 52 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯4 ← comma 53 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♯♯♯♯3 ← comma 54 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♭♭♭♭♭2 ← comma 55 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭1 ← comma 56 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♭♭7 ← comma 57 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:      "6 ← comma 58 → ", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:    "♯♯5 ← comma 59 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♯♯♯♯4 ← comma 60 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯3 ← comma 61 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:  "♭♭♭♭2 ← comma 62 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:    "♭♭1 ← comma 63 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭7 ← comma 64 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♯6 ← comma 65 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♯♯♯5 ← comma 66 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♯♯♯♯♯4 ← comma 67 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label: "♭♭♭♭♭3 ← comma 68 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:   "♭♭♭2 ← comma 69 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:     "♭1 ← comma 70 → ", value:1,bg:"#ffffff", fg:"#000000"},
-{ label:      "7 ← comma 71 → ", value:1,bg:"#888888", fg:"#ffffff"},
-{ label:    "♯♯6 ← comma 72 → ", value:1,bg:'#ffffff', fg:"#000000"},
-{ label:  "♯♯♯♯5 ← comma 73 → ", value:1,bg:'#ffffff', fg:"#000000"},
-{ label: "♭♭♭♭♭4 ← comma 74 → ", value:1,bg:'#ffffff', fg:"#000000"},
-{ label:  "♭♭♭♭3 ← comma 75 → ", value:1,bg:'#ffffff', fg:"#000000"},
-{ label:    "♭♭2 ← comma 76 → ", value:1,bg:'#ffffff', fg:"#000000"},
-];
-
-var notes = [
-{ label:"C",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"B♯",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♯♯♯",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♭♭♭♭",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♯",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♯♯",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♯♯♯♯",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♭♭♭♭♭", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♭♭",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"C♯♯",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♯♯♯",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♭♭♭♭",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♭♭",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♯",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♯♯♯",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♯♯♯♯",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♭♭♭♭♭", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"D♯♯",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♯♯♯♯",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♭♭♭♭",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♭♭",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"E#",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D###",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♭♭♭♭♭", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♯",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♯♯",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♯♯♯♯",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♭♭♭♭♭", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♭♭♭♭",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♭♭",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"F♯♯",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♯♯♯",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♭♭♭♭",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♯",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♯♯♯",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♯♯♯♯",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♭♭♭♭♭", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♭♭",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"G♯♯",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♯♯♯♯",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♭♭♭♭",  value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♭♭",    value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"A♯",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"G♯♯♯",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"F♯♯♯♯♯", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"E♭♭♭♭♭", value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"D♭♭♭",   value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"C♭",     value:1,bg:"rgba(0,0,0,0)", fg:"#000000"},
-{ label:"B",      value:1,bg:"rgba(0,0,0,0.5)", fg:"#ffffff"},
-{ label:"A♯♯",    value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
-{ label:"G♯♯♯♯",  value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
-{ label:"F♭♭♭♭♭", value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
-{ label:"E♭♭♭♭",  value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
-{ label:"D♭♭",    value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
-];
-
+/*
     var svg =  makeSvg("svgContainer1", "50%", "50%");
     drawPieDonutSvg(svg, "start", +17,180, "notes", notes);
     drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
@@ -403,46 +303,95 @@ var notes = [
     circle.setAttribute("r",70);
     circle.setAttribute("fill","#ccc");
     svg.appendChild(circle);
+*/
 
-
-    var degrees = null;
+    var svg = null;
+    var circle = null;
     var rotateDegrees = 0;
     var rotateNotes = 0;
-    var notes = null;
+    var gDegrees = null;
+    var gNotes = null;
     var incdec = 360/77;
+
+    function incRotateDegrees() {
+      rotateDegrees = (((rotateDegrees+1)%77)+77)%77;
+      console.log((((rotateDegrees-rotateNotes)%77)+77)%77);
+    }
+    function decRotateDegrees() {
+      rotateDegrees = (((rotateDegrees-1)%77)+77)%77;
+      console.log((((rotateDegrees-rotateNotes)%77)+77)%77);
+    }
+    function incRotateNotes() {
+      rotateNotes = (((rotateNotes+1)%77)+77)%77;
+      console.log((((rotateDegrees-rotateNotes)%77)+77)%77);
+    }
+    function decRotateNotes() {
+      rotateNotes = (((rotateNotes-1)%77)+77)%77;
+      console.log((((rotateDegrees-rotateNotes)%77)+77)%77);
+    }
+
+    function tour(){
+
+      for(let i = 0 ; i < 77 ; i++) {
+        let r = ((((rotateDegrees-rotateNotes)+i)%77)+77)%77;
+        if (degrees[i].path.classList.contains('active')) {
+          degrees[i].text.classList.add('active');
+          notes[r].path.classList.add('active');
+          notes[r].text.classList.add('active');
+        } else {
+          degrees[i].text.classList.remove('active');
+          notes[r].path.classList.remove('active');
+          notes[r].text.classList.remove('active');
+        }
+      }
+    }
+
     window.onload = (ewol)=>{
-      degrees = document.querySelector("g#degrees");
-      notes = document.querySelector("g#notes");
-      notes.style.backgroundColor="yellow";
-      degrees.addEventListener("wheel", (ed)=>{
+      svg =  makeSvg("svgContainer1", "50%", "50%");
+      drawPieDonutSvg(svg, "start", +17,180, "notes", notes);
+      drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
+      circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx",200);
+      circle.setAttribute("cy",200);
+      circle.setAttribute("r",70);
+      circle.setAttribute("fill","#ccc");
+      svg.appendChild(circle);
+
+      gNotes = document.querySelector("g#notes");
+      gNotes.style.backgroundColor="yellow";
+      gDegrees = document.querySelector("g#degrees");
+      gDegrees.addEventListener("wheel", (ed)=>{
         ed.preventDefault();
         if (ed.deltaY<0) {
-          rotateDegrees -= incdec;
+          decRotateDegrees();
         } else if (ed.deltaY>0) {
-          rotateDegrees += incdec;
+          incRotateDegrees();
         }
-        degrees.setAttribute("transform",`rotate(${rotateDegrees} 200 200)`)
+        gDegrees.setAttribute("transform",`rotate(${rotateDegrees * incdec} 200 200)`)
+        tour();
       });
-      notes.addEventListener("wheel", (en)=>{
+      gNotes.addEventListener("wheel", (en)=>{
         en.preventDefault();
         if (en.deltaY<0) {
-          rotateNotes -= incdec;
+          decRotateNotes();
         } else if (en.deltaY>0) {
-          rotateNotes += incdec;
+          incRotateNotes();
         }
-        notes.setAttribute("transform",`rotate(${rotateNotes} 200 200)`)
+        gNotes.setAttribute("transform",`rotate(${rotateNotes * incdec} 200 200)`)
+        tour();
       });
       circle.addEventListener("wheel", (ec)=>{
         ec.preventDefault();
         if (ec.deltaY<0) {
-          rotateNotes -= incdec;
-          rotateDegrees -= incdec;
+          decRotateNotes();
+          decRotateDegrees();
         } else if (ec.deltaY>0) {
-          rotateNotes += incdec;
-          rotateDegrees += incdec;
+          incRotateNotes();
+          incRotateDegrees();
         }
-        notes.setAttribute("transform",`rotate(${rotateNotes} 200 200)`)
-        degrees.setAttribute("transform",`rotate(${rotateDegrees} 200 200)`)
+        gNotes.setAttribute("transform",`rotate(${rotateNotes * incdec} 200 200)`);
+        gDegrees.setAttribute("transform",`rotate(${rotateDegrees * incdec} 200 200)`);
+        tour();
       });
     };
 
