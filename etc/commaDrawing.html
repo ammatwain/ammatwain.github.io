@@ -3,14 +3,20 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <style>
+      @font-face {
+        font-family: "GentiumPlus";
+        src: local("Gentium Plus"), url("GentiumPlusRegular.ttf");
+      }
+      svg{
+        cursor: default;
+      }
+    </style>
   </head>
   <body>
     <header></header>
     <main>
-    A&nbsp;A
       <div id="svgContainer1"></div>
-      <div id="svgContainer2"></div>
-      <!--canvas id="myCanvas" width="400" height="400"></canvas-->
     </main>
     <footer></footer>
   </body>
@@ -149,10 +155,13 @@ function makeSvg(containerId, width, height){
   var svgContainer = document.getElementById(containerId);
   var svgNS = "http://www.w3.org/2000/svg";
   var svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", "400");
-  svg.setAttribute("height", "400");
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", "0 0 400 400");
+  var g = document.createElementNS(svgNS, "g");
+  svg.appendChild(g);
   svgContainer.appendChild(svg);
-  return svg;
+  return g;
 }
 
 function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
@@ -173,7 +182,7 @@ function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
   circle.setAttribute("r",radius);
   circle.setAttribute("fill","rgba(0,0,0,.1)");
   g.appendChild(circle);
-
+  var id = 0;
   data.forEach(function (d) {
     endAngle = startAngle + (360 * d.value / totalValue);
     var sectionAngle = startAngle + (endAngle - startAngle) / 2;
@@ -200,6 +209,7 @@ function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
     ].join(" ");
 
     var path = document.createElementNS(svgNS, "path");
+    path.id = `${group}-${id}`;
     path.setAttribute("d", pathData);
     path.setAttribute("fill", d.bg);
     g.appendChild(path);
@@ -207,10 +217,11 @@ function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
     var text = document.createElementNS(svgNS, "text");
     text.setAttribute("x", textX+textXPos);
     text.setAttribute("y", textY+0.5);
-    text.setAttribute("font-family","Gentium Plus");
+    text.setAttribute("font-family","GentiumPlus");
     text.setAttribute("transform", "rotate(" + rotationAngle + " " + textX + " " + textY + ")");
     text.setAttribute("text-anchor", textAlign);
     text.setAttribute("alignment-baseline", "middle");
+    text.setAttribute("dominant-baseline","middle");
     //text.setAttribute("fill", d.bg);
     text.setAttribute("fill", d.fg);
     text.textContent = labelText;
@@ -218,6 +229,7 @@ function drawPieDonutSvg(svg, textAlign, textXPos, radius , group, data) {
     g.appendChild(text);
 
     startAngle = endAngle;
+    id++;
   });
   svg.appendChild(g);
 }
@@ -382,9 +394,16 @@ var notes = [
 { label:"D♭♭",    value:1,bg:'rgba(0,0,0,0)', fg:"#000000"},
 ];
 
-var svg =  makeSvg("svgContainer1", 400, 400);
-drawPieDonutSvg(svg, "start", +15,180, "notes", notes);
-drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
+    var svg =  makeSvg("svgContainer1", "50%", "50%");
+    drawPieDonutSvg(svg, "start", +17,180, "notes", notes);
+    drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
+    var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx",200);
+    circle.setAttribute("cy",200);
+    circle.setAttribute("r",70);
+    circle.setAttribute("fill","#ccc");
+    svg.appendChild(circle);
+
 
     var degrees = null;
     var rotateDegrees = 0;
@@ -396,6 +415,7 @@ drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
       notes = document.querySelector("g#notes");
       notes.style.backgroundColor="yellow";
       degrees.addEventListener("wheel", (ed)=>{
+        ed.preventDefault();
         if (ed.deltaY<0) {
           rotateDegrees -= incdec;
         } else if (ed.deltaY>0) {
@@ -404,12 +424,25 @@ drawPieDonutSvg(svg, "end",35, 150, "degrees",degrees);
         degrees.setAttribute("transform",`rotate(${rotateDegrees} 200 200)`)
       });
       notes.addEventListener("wheel", (en)=>{
+        en.preventDefault();
         if (en.deltaY<0) {
           rotateNotes -= incdec;
         } else if (en.deltaY>0) {
           rotateNotes += incdec;
         }
         notes.setAttribute("transform",`rotate(${rotateNotes} 200 200)`)
+      });
+      circle.addEventListener("wheel", (ec)=>{
+        ec.preventDefault();
+        if (ec.deltaY<0) {
+          rotateNotes -= incdec;
+          rotateDegrees -= incdec;
+        } else if (ec.deltaY>0) {
+          rotateNotes += incdec;
+          rotateDegrees += incdec;
+        }
+        notes.setAttribute("transform",`rotate(${rotateNotes} 200 200)`)
+        degrees.setAttribute("transform",`rotate(${rotateDegrees} 200 200)`)
       });
     };
 
