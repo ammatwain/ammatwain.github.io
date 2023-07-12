@@ -1,0 +1,21 @@
+
+[Risolto] Continui "POP" e"CRACK" audio senza riproduzione. INTEL N95
+Buongiorno a tutti gli utenti,
+scrivo questo topic da principiante del mondo Linux:
+vorrei installare su un nuovo mini pc KUBUNTU 23.04: tutto appare ben funzionante, ma se lascio il pc fermo per un pò senza
+attività audio dalle casse provengone ogni tanto dei secchi POP e CRACK ( come se ci fossero continu sbalzi e disconnessioni del segnale ).
+Il pc è : Mini PC Intel Alder Lake Ν95 Acemagician
+ACE-AD03(8+256) con nuovo processore Intel N95.
+Possiedo già due pc ricondizionati con processori I5 anzianotti che non mi hanno mai dato querst problemi collegati allo stesso monitor.
+Il cavo è HDMI di qualità, sostituito per scrupolo, ma inutilmente.
+Ho il sospetto che si tratti del nuovo sistema di gestione audio adottato
+
+
+Re: [RISOLTO] Continui "POP" e"CRACK" audio senza riproduzione. INTEL N95
+Trovata una procedura illuminante in un forum anglosassone:
+The operation system's default behavior is to save power by turning off the Audio Adapter after 10 seconds. This power-save feature is causing the popping, and can be disabled.
+In Terminal type sudo nano /sys/module/snd_hda_intel/parameters/power_save and change the value from 1 to 0.
+Then type sudo nano /sys/module/snd_hda_intel/parameters/power_save_controller and change the value from Y to N.
+On my system, this solved the audio popping problem immediately. However on reboot, the problem came back and I found these values had been reset. To keep these values persistent, I had to add a line of code to /etc/modprobe.d/alsa-base.conf I added this after the last line of code in the file, options snd-hda-intel power_save=0 power_save_controller=N
+
+Save the file, and you're good to go!
